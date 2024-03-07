@@ -8,9 +8,7 @@ import { ChatRoom } from "./models/ChatRoom";
 import { DeedRepository } from "./models/DeedRepository";
 import { AuctionRepository } from "./models/AuctionRepository";
 
-// rename to avoid conflict between metamask
-// will be used for whisper v5/6
-var Web3_1 = require("web3");
+var Web3 = require("web3");
 
 Vue.use(VueResource);
 Vue.use(Vuetify);
@@ -70,25 +68,56 @@ Vue.mixin({
         this.$deedRepoInstance = new DeedRepository();
         this.$auctionRepoInstance = new AuctionRepository();
 
-        this.$chatroomInstance.setWeb3(new Web3_1(Config.SHH_ENDPOINT));
+        this.$chatroomInstance.setWeb3(new Web3(Config.SHH_ENDPOINT));
 
-        // one instance of web3 available to all components
-        if (typeof web3 !== "undefined") {
-            web3 = new Web3(web3.currentProvider);
-            this.$auctionRepoInstance.setWeb3(web3);
-            this.$deedRepoInstance.setWeb3(web3);
+        // MetaMaskとの連携
+        if (window.ethereum) {
+            window.web3 = new Web3(window.ethereum);
+            window.ethereum
+                .request({ method: "eth_requestAccounts" })
+                .then((accounts) => {
+                    if (accounts.length > 0) {
+                        store.setWeb3DefaultAccount(accounts[0]);
+                        store.setMetamaskInstalled();
+                        window.web3.eth.net.getId().then((netId) => {
+                            store.setNetworkId(netId);
+                        });
 
+                        // モデルへのweb3設定を更新
+                        this.$auctionRepoInstance.setWeb3(window.web3);
+                        this.$deedRepoInstance.setWeb3(window.web3);
+                    }
+                })
+                .catch((error) => {
+                    console.error("User denied account access");
+                });
+        } else if (window.web3) {
+            // 既存のWeb3プロバイダーのサポート
+            window.web3 = new Web3(web3.currentProvider);
             store.setMetamaskInstalled();
-            web3.version.getNetwork((err, netId) => {
+            window.web3.eth.net.getId().then((netId) => {
                 store.setNetworkId(netId);
             });
-            // pull accounts every 2 seconds
-            setInterval(() => {
-                web3.eth.getAccounts((err, data) => {
-                    if (data.length > 0) store.setWeb3DefaultAccount(data[0]);
-                });
-            }, 2000);
+
+            // モデルへのweb3設定を更新
+            this.$auctionRepoInstance.setWeb3(window.web3);
+            this.$deedRepoInstance.setWeb3(window.web3);
+        } else {
+            console.log(
+                "Non-Ethereum browser detected. You should consider trying MetaMask!"
+            );
         }
+
+        // アカウント情報の定期的な更新
+        setInterval(() => {
+            if (window.web3) {
+                window.web3.eth.getAccounts().then((accounts) => {
+                    if (accounts.length > 0)
+                        store.setWeb3DefaultAccount(accounts[0]);
+                });
+            }
+        }, 2000);
+
         // inject config to components
         this.$config = Config;
     },
