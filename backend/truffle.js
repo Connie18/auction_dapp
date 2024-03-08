@@ -1,10 +1,15 @@
 module.exports = {
   networks: {
-    development: {
+    dev: {
+      network_id: "*",
       host: "localhost",
       port: 8545,
+    },
+    ganache: {
       network_id: "*",
-      gas: 3000000
-    }
-  }
+      host: "localhost",
+      port: 7545,
+      gas: 6721975,
+    },
+  },
 };
