@@ -495,7 +495,7 @@ export default {
          */
         showAuction() {
             // get random deedid
-            this.deed.deedId = new web3.BigNumber(`${this.$root.$data.globalState.getRandomInt(123456789,999999999)}${this.$root.$data.globalState.getRandomInt(123456789,999999999)}`)
+            this.deed.deedId = new web3.utils.BN(`${this.$root.$data.globalState.getRandomInt(123456789,999999999)}${this.$root.$data.globalState.getRandomInt(123456789,999999999)}`)
             this.dialog = true;
         },
 
