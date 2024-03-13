@@ -78,14 +78,6 @@ Vue.mixin({
                 .then((accounts) => {
                     if (accounts.length > 0) {
                         store.setWeb3DefaultAccount(accounts[0]);
-                        store.setMetamaskInstalled();
-                        window.web3.eth.net.getId().then((netId) => {
-                            store.setNetworkId(netId);
-                        });
-
-                        // モデルへのweb3設定を更新
-                        this.$auctionRepoInstance.setWeb3(window.web3);
-                        this.$deedRepoInstance.setWeb3(window.web3);
                     }
                 })
                 .catch((error) => {
@@ -94,19 +86,21 @@ Vue.mixin({
         } else if (window.web3) {
             // 既存のWeb3プロバイダーのサポート
             window.web3 = new Web3(web3.currentProvider);
-            store.setMetamaskInstalled();
-            window.web3.eth.net.getId().then((netId) => {
-                store.setNetworkId(netId);
-            });
-
-            // モデルへのweb3設定を更新
-            this.$auctionRepoInstance.setWeb3(window.web3);
-            this.$deedRepoInstance.setWeb3(window.web3);
         } else {
             console.log(
                 "Non-Ethereum browser detected. You should consider trying MetaMask!"
             );
         }
+
+        // メタマスクのインストール状況
+        store.setMetamaskInstalled();
+        window.web3.eth.net.getId().then((netId) => {
+            store.setNetworkId(netId);
+        });
+
+        // モデルへのweb3設定を更新
+        this.$auctionRepoInstance.setWeb3(window.web3);
+        this.$deedRepoInstance.setWeb3(window.web3);
 
         // アカウント情報の定期的な更新
         setInterval(() => {
