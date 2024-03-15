@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
-    "build-backend": "cd ../backend && npm ci && npm run compile",
+    "build-backend": "cd ../backend && npm install && npm run compile",
     "copy-auction-repository": "shx cp ../backend/build/contracts/AuctionRepository.json ./src/contracts/AuctionRepository.json",
     "copy-deed-repository": "shx cp ../backend/build/contracts/DeedRepository.json ./src/contracts/DeedRepository.json",
     "copy-contract": "npm run build-backend && npm run copy-auction-repository && npm run copy-deed-repository",
