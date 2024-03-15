@@ -7,7 +7,11 @@
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
-    "build": "node build/build.js"
+    "build-backend": "cd ../backend && npm ci && npm run compile",
+    "copy-auction-repository": "shx cp ../backend/build/contracts/AuctionRepository.json ./src/contracts/AuctionRepository.json",
+    "copy-deed-repository": "shx cp ../backend/build/contracts/DeedRepository.json ./src/contracts/DeedRepository.json",
+    "copy-contract": "npm run build-backend && npm run copy-auction-repository && npm run copy-deed-repository",
+    "build": "npm run copy-contract && node build/build.js"
   },
   "dependencies": {
     "ethereumjs-util": "^5.1.5",
@@ -46,6 +50,7 @@
     "rimraf": "^2.6.0",
     "semver": "^5.3.0",
     "shelljs": "^0.7.6",
+    "shx": "^0.3.4",
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
     "vue-loader": "^13.3.0",
