@@ -1,0 +1,15 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Smart contracts for Auction Dapp",
+  "scripts": {
+    "compile": "truffle compile",
+    "migrate": "truffle migrate",
+    "test": "truffle test"
+  },
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "truffle": "^5.4.0"
+  }
+}
