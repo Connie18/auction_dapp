@@ -291,7 +291,7 @@ export default {
             //     if ('contentType' in entry) imageUrl = `${this.$config.BZZ_ENDPOINT}/bzz-raw:/${auction[3]}/${entry.path}`
             // })
 
-            let expires = new Date(auction[1].toNumber() * 1000), now = new Date()
+            let expires = new Date(Number(auction[1]) * 1000), now = new Date()
             const expirationInHuman = moment.duration(moment(now).diff(expires)).humanize()
 
 
