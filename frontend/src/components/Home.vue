@@ -91,7 +91,6 @@
 
 <script>
 import moment from "moment";
-import { AuctionRepository } from "../models/AuctionRepository";
 
 export default {
   data: () => ({
@@ -114,25 +113,30 @@ export default {
     const count = await this.$auctionRepoInstance.getCount();
     for (let i = 0; i < count; i++) {
       let auction = await this.$auctionRepoInstance.findById(i);
-      // get metadata
-      const swarmResult = await this.$http.get(
-        `${this.$config.BZZ_ENDPOINT}/bzz-list:/${auction[3]}`
-      );
-      let imageUrl = "";
-      swarmResult.body.entries.map(entry => {
-        if ("contentType" in entry)
-          imageUrl = `${this.$config.BZZ_ENDPOINT}/bzz-raw:/${auction[3]}/${entry.path}`;
-      });
+      console.log(`Auction at Home: ${JSON.stringify(auction)}`)
+
+      // NOTE: BZZエンドポイントへの接続を一時的に停止
+      // // get metadata
+      // const swarmResult = await this.$http.get(
+      //   `${this.$config.BZZ_ENDPOINT}/bzz-list:/${auction[3]}`
+      // );
+      // let imageUrl = "";
+      // swarmResult.body.entries.map(entry => {
+      //   if ("contentType" in entry)
+      //     imageUrl = `${this.$config.BZZ_ENDPOINT}/bzz-raw:/${auction[3]}/${entry.path}`;
+      // });
+
       this.auctions.push({
         id: i,
-        image: imageUrl,
+        // TODO: Fix hardcoded image url
+        image: 'https://lh3.googleusercontent.com/a/ALm5wu2-PKHhBRJNMJ1Qu9iEDYWVwq7zJ59xITR5kP2WdQ=s96-c',
         title: auction[0],
-        expirationDate: moment(new Date(auction[1].toNumber() * 1000)).format(
+        expirationDate: moment(new Date(Number(auction[1]) * 1000)).format(
           "dddd, MMMM Do YYYY, h:mm:ss a"
         ),
-        startingPrice: web3.utils.fromWei(auction[2].toNumber(), "ether"),
+        startingPrice: web3.utils.fromWei(auction[2].toString(), "ether"),
         metadata: auction[3],
-        deedId: auction[4].toNumber(),
+        deedId: Number(auction[4]),
         deedRepositoryAddress: auction[5],
         owner: auction[6],
         active: auction[7],

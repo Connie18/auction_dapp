@@ -68,7 +68,8 @@ Vue.mixin({
         this.$deedRepoInstance = new DeedRepository();
         this.$auctionRepoInstance = new AuctionRepository();
 
-        this.$chatroomInstance.setWeb3(new Web3(Config.SHH_ENDPOINT));
+        // SHHエンドポイントへの接続を一時的に停止
+        // this.$chatroomInstance.setWeb3(new Web3(Config.SHH_ENDPOINT));
 
         // MetaMaskとの連携
         if (window.ethereum) {

@@ -258,8 +258,8 @@
         </v-content>
     </v-app>
 </template>
-<script>
 
+<script>
 export default {
     name: 'app',
     data: () => ({
@@ -377,19 +377,28 @@ export default {
             try {
                 this.loadingModal = true
 
-                // create from data and attach the auction property
-                let formData = new FormData()
-                Object.keys(this.auction).map((key) => {
-                    formData.append(key, this.auction[key])
-                })
-                const response = await this.$http.post(`${this.$config.BZZ_ENDPOINT}/bzz:/`, formData)
-                this.auction.metadata = response.body
+                // NOTE: BZZエンドポイントへの接続を一時的に停止
+                // // create from data and attach the auction property
+                // let formData = new FormData()
+                // Object.keys(this.auction).map((key) => {
+                //     formData.append(key, this.auction[key])
+                // })
+                // const response = await this.$http.post(`${this.$config.BZZ_ENDPOINT}/bzz:/`, formData)
+                // this.auction.metadata = response.body
 
-                console.log(this.auction)
+                console.log(`Auction at App: ${metadata}`)
 
-                // create the smart contract
+                // Create the smart contract
                 this.$auctionRepoInstance.setAccount(this.getWeb3DefaultAccount)
-                await this.$auctionRepoInstance.create(this.auction.deedId, this.auction.auctionTitle, this.auction.metadata, this.auction.startingPrice, this.auction.timeInBlocks)
+                await this.$auctionRepoInstance.create(
+                    this.auction.deedId,
+                    this.auction.auctionTitle,
+                    this.auction.metadata,
+                    this.auction.startingPrice,
+                    this.auction.timeInBlocks
+                )
+
+                // Watch if the auction is created successfully
                 this.$auctionRepoInstance.watchIfCreated((error, result) => {
                     if (!error) {
                         this.loadingModal = false
@@ -425,7 +434,7 @@ export default {
                     else
                         this.creatingAssetError = `Couldn't verify asset creation process. Please try again`
 
-                    // get the localstorage and push the new asset
+                    // get the local storage and push the new asset
                     let localStorageItems = this.getLocalStorageItems()
                     if (localStorageItems) {
                         localStorageItems.push(this.deed.deedId)
