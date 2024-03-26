@@ -386,7 +386,7 @@ export default {
                 // const response = await this.$http.post(`${this.$config.BZZ_ENDPOINT}/bzz:/`, formData)
                 // this.auction.metadata = response.body
 
-                console.log(`Auction at App: ${auction}`)
+                console.log(`Auction at App: ${this.auction}`)
 
                 // Create the smart contract
                 this.$auctionRepoInstance.setAccount(this.getWeb3DefaultAccount)
